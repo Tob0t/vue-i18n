@@ -67,9 +67,11 @@ function looseClone (obj) {
 function remove (arr, item) {
   if (arr.length) {
     var index = arr.indexOf(item);
-    if (index > -1) {
-      return arr.splice(index, 1)
+    while (index > -1) {
+      arr.splice(index, 1);
+      index = arr.indexOf(item);
     }
+    return arr
   }
 }
 
@@ -1141,8 +1143,6 @@ VueI18n.prototype._link = function _link (
   values,
   visitedLinkStack
 ) {
-    var this$1 = this;
-
   var ret = str;
 
   // Match all the links within the local
@@ -1168,26 +1168,26 @@ VueI18n.prototype._link = function _link (
     visitedLinkStack.push(linkPlaceholder);
 
     // Translate the link
-    var translated = this$1._interpolate(
+    var translated = this._interpolate(
       locale, message, linkPlaceholder, host,
       interpolateMode === 'raw' ? 'string' : interpolateMode,
       interpolateMode === 'raw' ? undefined : values,
       visitedLinkStack
     );
 
-    if (this$1._isFallbackRoot(translated)) {
-      if (process.env.NODE_ENV !== 'production' && !this$1._silentTranslationWarn) {
+    if (this._isFallbackRoot(translated)) {
+      if (process.env.NODE_ENV !== 'production' && !this._silentTranslationWarn) {
         warn(("Fall back to translate the link placeholder '" + linkPlaceholder + "' with root locale."));
       }
       /* istanbul ignore if */
-      if (!this$1._root) { throw Error('unexpected error') }
-      var root = this$1._root;
+      if (!this._root) { throw Error('unexpected error') }
+      var root = this._root;
       translated = root._translate(
         root._getMessages(), root.locale, root.fallbackLocale,
         linkPlaceholder, host, interpolateMode, values
       );
     }
-    translated = this$1._warnDefault(
+    translated = this._warnDefault(
       locale, linkPlaceholder, translated, host,
       Array.isArray(values) ? values : [values]
     );

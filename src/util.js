@@ -56,10 +56,12 @@ export function looseClone (obj: Object): Object {
 
 export function remove (arr: Array<any>, item: any): Array<any> | void {
   if (arr.length) {
-    const index = arr.indexOf(item)
-    if (index > -1) {
-      return arr.splice(index, 1)
+    let index = arr.indexOf(item)
+    while (index > -1) {
+      arr.splice(index, 1)
+      index = arr.indexOf(item)
     }
+    return arr
   }
 }
 
